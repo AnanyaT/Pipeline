@@ -15,7 +15,7 @@ pool:
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: "3.11"  # Specify your desired Python version
+    versionSpec: "3.x"  # Specify your desired Python version
 
 - script: |
     pip install virtualenv
@@ -27,7 +27,7 @@ steps:
 
 - script: |
     .\venv\Scripts\activate
-    python -m LithiumPackage.src.litihumDBFinal.py
+    python -m src.litihumDBFinal.py
   displayName: 'Run Python script'
 
 
