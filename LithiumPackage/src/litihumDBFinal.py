@@ -173,8 +173,8 @@ class UrlProcessing:
         myclient = pymongo.MongoClient("mongodb://163.183.205.67:27017/")
         print('okay')
         mydb = myclient["NeoLith"]
-        mycol = mydb["RunTotal288"]        
-        if "RunTotal288" in mydb.list_collection_names():
+        mycol = mydb["RunTotalPipe"]        
+        if "RunTotalPipe" in mydb.list_collection_names():
             self.dbdata = pd.DataFrame(list(mycol.find({},{'_id': 0, "url_name": 1, "status": 1})))
         else:
              self.dbdata = pd.DataFrame({})
@@ -804,7 +804,7 @@ class DataBase:
     def mongoPush(self):
         myclient = pymongo.MongoClient("mongodb://163.183.205.67:27017/")
         mydb = myclient["NeoLith"]
-        mycol = mydb["RunTotal288"]
+        mycol = mydb["RunTotalPipe"]
         if dbdata.size != 0:
             if self.url not in dbdata["url_name"].to_list():
                 mycol.insert_one({"url_name" : self.data[0], "date": dateConverter(self.data[1]), "title": self.data[2], "content": self.data[3], "status":self.data[5],"lines": self.data[4]})
@@ -915,7 +915,7 @@ def getUniqueUrls():
     #Get data from articleCollection
     client = pymongo.MongoClient('mongodb://163.183.205.67:27017/')
     db = client['NeoLith']
-    collection = db['RunTotal288']
+    collection = db['RunTotalPipe']
     projection = {'_id': 1, 'url_name': 1, 'content': 1}
     cursor = collection.find({}, projection)
     df = pd.DataFrame(list(collection.find()))
@@ -924,9 +924,9 @@ def getUniqueUrls():
     #Get existing info from SentimentAnalysis
     myclient = pymongo.MongoClient("mongodb://163.183.205.67:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["SentimentAnalysis_RunTotal288"]
+    mycol = mydb["SentimentAnalysis_RunTotalPipe"]
     urls = df1["url_name"].to_list()
-    if "SentimentAnalysis_RunTotal288" in db.list_collection_names():
+    if "SentimentAnalysis_RunTotalPipe" in db.list_collection_names():
         dbdata = pd.DataFrame(list(mycol.find({},{'_id': 0, "url_name": 1})))
     else:
         dbdata = pd.DataFrame({})
@@ -998,7 +998,7 @@ def sentimentAnalysis():
     df2 = df[['_id', 'url_name', 'cleaned_content1', 'mode_label', 'mean_score']]
     df2 = df2.dropna(subset=['_id'])
     #df2.reset_index(drop=True, inplace=True)
-    new_collection = mydb['SentimentAnalysis_RunTotal288']
+    new_collection = mydb['SentimentAnalysis_RunTotalPipe']
     new_docs = df2.to_dict('records')
     if len(new_docs) != 0: new_collection.insert_many(new_docs)
     else: print("No new record to insert")
@@ -1011,7 +1011,7 @@ def sentimentAnalysis():
 def readDB():
     client = pymongo.MongoClient('mongodb://163.183.205.67:27017/')
     db = client['NeoLith']
-    collection = db['RunTotal288']
+    collection = db['RunTotalPipe']
     
     projection = {'_id': 1, 'url_name': 1, 'content': 1}
     cursor = collection.find({}, projection)
@@ -1064,7 +1064,7 @@ def summary():
 
     df2 = df1[['_id', 'url_name', 'content1', 'extractive_summary', 'keywords']]
     new_docs = df2.to_dict('records')
-    mycol = mydb["contentSummary_RunTotal288"]
+    mycol = mydb["contentSummary_RunTotalPipe"]
     if len(new_docs) != 0: mycol.insert_many(new_docs)
     else: print("No new record to insert")
         
@@ -1457,11 +1457,11 @@ def loc_to_verb(tok):
 def Article_entities():
     myclient = pymongo.MongoClient("mongodb://163.183.205.67:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["RunTotal288"]
+    mycol = mydb["RunTotalPipe"]
     data = list(mycol.find({},{'_id': 0, "url_name": 1, "content": 1, "category": 1}))
 
     mydb = myclient["NeoLith"]
-    mycol = mydb["total_content_Run228New"]
+    mycol = mydb["total_content_RunPipe"]
 
     market_segment = pd.read_csv("C:\\NeoLith\\Final_test_1\\Market segmentation for LDMSNew.csv", delimiter=',', encoding='unicode_escape')
     market_segment.columns = ["Mines","Companies","Ore_type","segment"]
@@ -1586,7 +1586,7 @@ def mongoExtract():
     
     client = pymongo.MongoClient('mongodb://163.183.205.67:27017/')
     db = client['NeoLith']
-    collection = db['RunTotal288']
+    collection = db['RunTotalPipe']
     projection = {'_id': 1, 'url_name': 1, 'content': 1}
     cursor = collection.find({}, projection)
     df = pd.DataFrame(list(collection.find()))
@@ -1603,7 +1603,7 @@ def mongoExtract():
     df1 = df1.rename(columns={'url_name': 'URL'})
 
 
-    collection = db['total_content_Run228New']
+    collection = db['total_content_RunPipe']
     #projection = {'_id': 1, 'url_name': 1, 'content': 1}
     cursor = collection.find({})
     df = pd.DataFrame(list(collection.find()))
@@ -1708,7 +1708,7 @@ def similarityAnalysis():
 
     myclient = pymongo.MongoClient("mongodb://163.183.205.67:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["articleSimilarity_New228"]
+    mycol = mydb["articleSimilarity_NewPipe"]
     mycol.insert_many(results)
 
         
@@ -1922,7 +1922,7 @@ def predictData():
     
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["RunTotal288"]
+    mycol = mydb["RunTotaPipe"]
     data = list(mycol.find({},{'_id': 0, "url_name": 1, "content": 1}))
     
     dataset = pd.DataFrame()
@@ -2193,7 +2193,7 @@ def getClassification():
 def getMoney():
     client = pymongo.MongoClient('mongodb://localhost:27017/')
     db = client['NeoLith']
-    collection_entity = db['total_content_Run228New']
+    collection_entity = db['total_content_RunPipe']
     df_entity = pd.DataFrame(list(collection_entity.find()))
 
     df_entity_filtered = df_entity[df_entity['Type'] == 'MONEY']
@@ -2424,7 +2424,7 @@ def predictData():
     
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["RunTotal288"]
+    mycol = mydb["RunTotalPipe"]
     data = list(mycol.find({},{'_id': 0, "url_name": 1, "content": 1}))
     
     dataset = pd.DataFrame()
@@ -2520,7 +2520,7 @@ def push_data(pred_data):
 
     myclient = pymongo.MongoClient("mongodb://localhost:27017/")
     mydb = myclient["NeoLith"]
-    mycol = mydb["total_content_Run228New"]
+    mycol = mydb["total_content_RunPipe"]
     data = list(mycol.find({},{'_id': 0, "url_name": 1, "content": 1}))
 
     #markets = ['Market','Extraction/Competitors','Academic/Enabling Technology','Lithium Resources','Battery/Critical Minerals']    
