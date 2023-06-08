@@ -4,8 +4,9 @@
 # https://aka.ms/yaml
 
 trigger:
-- main
-appendCommitMessageToRunName:
+  branches:
+    include:
+      - main
 
 
 pool:
@@ -14,7 +15,7 @@ pool:
 steps:
 - task: UsePythonVersion@0
   inputs:
-    versionSpec: '3.11'  # Specify your desired Python version
+    versionSpec: "3.11"  # Specify your desired Python version
 
 - script: |
     pip install virtualenv
